@@ -13,6 +13,8 @@ end
 
 local opts = { noremap = true, silent = true }
 
+vim.opt.termguicolors = true
+
 vim.api.nvim_set_keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
 vim.api.nvim_set_keymap("n", "<leader>.", ":NvimTreeFocus<cr>", opts)
 
