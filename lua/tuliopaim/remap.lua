@@ -10,6 +10,8 @@ vim.api.nvim_set_keymap("", "<Space>", "<Nop>", opts)
 -- Better window navigation
 vim.api.nvim_set_keymap('n', "<C-d>", "<C-d>zz", opts)
 vim.api.nvim_set_keymap('n', "<C-u>", "<C-u>zz", opts)
+vim.api.nvim_set_keymap('n', "<leader>v", ":vsplit<CR>", opts)
+vim.api.nvim_set_keymap('n', "<leader>b", ":split<CR>", opts)
 
 -- Tabs
 -- Move to previous/next
@@ -18,10 +20,10 @@ vim.api.nvim_set_keymap('n', 'gk', ':bnext<enter>', opts)
 vim.api.nvim_set_keymap('n', '<leader>x', ':BufferDelete<CR>', opts)
 vim.api.nvim_set_keymap('n', 'gpt', ':BufferPin<CR>', opts)
 
-vim.api.nvim_set_keymap("n", "<C-Up>", ":resize +2<CR>", opts)
-vim.api.nvim_set_keymap("n", "<C-Down>", ":resize -2<CR>", opts)
-vim.api.nvim_set_keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
-vim.api.nvim_set_keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>ik", ":resize +2<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>ij", ":resize -2<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>ih", ":vertical resize -2<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>il", ":vertical resize +2<CR>", opts)
 
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
