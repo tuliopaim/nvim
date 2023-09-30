@@ -16,6 +16,7 @@ local opts = { noremap = true, silent = true }
 vim.opt.termguicolors = true
 
 vim.api.nvim_set_keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
+vim.api.nvim_set_keymap("n", "<leader>ha", ":NvimTreeToggle<cr>", opts)
 vim.api.nvim_set_keymap("n", "<leader>.", ":NvimTreeFocus<cr>", opts)
 
 local tree_cb = nvim_tree_config.nvim_tree_callback
@@ -23,7 +24,6 @@ local tree_cb = nvim_tree_config.nvim_tree_callback
 nvim_tree.setup {
     disable_netrw = true,
     hijack_netrw = true,
-    open_on_setup = false,
     open_on_tab = false,
     hijack_cursor = false,
     update_cwd = true,
