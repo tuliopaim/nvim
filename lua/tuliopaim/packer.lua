@@ -57,6 +57,7 @@ return require('packer').startup(function(use)
     }
 
     use "Decodetalkers/csharpls-extended-lsp.nvim"
+
     use {
         "windwp/nvim-autopairs",
         config = function() require("nvim-autopairs").setup {} end
@@ -71,5 +72,12 @@ return require('packer').startup(function(use)
     -- tmux
     use "christoomey/vim-tmux-navigator"
 
+    use({
+        "kdheepak/lazygit.nvim",
+        -- optional for floating window border decoration
+        requires = {
+            "nvim-lua/plenary.nvim",
+        },
+    })
 end)
 
