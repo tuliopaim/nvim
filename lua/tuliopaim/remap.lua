@@ -18,7 +18,7 @@ vim.api.nvim_set_keymap('n', "<leader>b", ":split<CR>", opts)
 vim.api.nvim_set_keymap('n', 'gj', ':bprev<enter>', opts)
 vim.api.nvim_set_keymap('n', 'gk', ':bnext<enter>', opts)
 vim.api.nvim_set_keymap('n', '<leader>x', ':BufferDelete<CR>', opts)
-vim.api.nvim_set_keymap('n', 'gpt', ':BufferPin<CR>', opts)
+vim.api.nvim_set_keymap('n', '<leader>tp', ':BufferPin<CR>', opts)
 
 vim.api.nvim_set_keymap("n", "<leader>sk", ":resize +2<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>sj", ":resize -2<CR>", opts)
