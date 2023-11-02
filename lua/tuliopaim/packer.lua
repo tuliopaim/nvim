@@ -72,6 +72,7 @@ return require('packer').startup(function(use)
     -- tmux
     use "christoomey/vim-tmux-navigator"
 
+    -- lazygit
     use({
         "kdheepak/lazygit.nvim",
         -- optional for floating window border decoration
@@ -79,5 +80,11 @@ return require('packer').startup(function(use)
             "nvim-lua/plenary.nvim",
         },
     })
+
+    use {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+    }
 end)
 

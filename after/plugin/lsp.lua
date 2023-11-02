@@ -115,7 +115,11 @@ cmp.setup({
     formating = lsp_zero.cmp_format(),
     mapping = cmp.mapping.preset.insert(cmp_mappings),
     sources = {
-        { name = 'path' }
+        {name = 'path'},
+        {name = 'nvim_lsp'},
+        {name = 'nvim_lua'},
+        {name = 'buffer', keyword_length = 3},
+        {name = 'luasnip', keyword_length = 2},
     }
 })
 
