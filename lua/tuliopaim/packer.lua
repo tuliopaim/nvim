@@ -53,10 +53,9 @@ return require('packer').startup(function(use)
             {'saadparwaiz1/cmp_luasnip'},
             {'L3MON4D3/LuaSnip'},
             {'rafamadriz/friendly-snippets'},
+            {'Decodetalkers/csharpls-extended-lsp.nvim'}
         }
     }
-
-    use "Decodetalkers/csharpls-extended-lsp.nvim"
 
     use {
         "windwp/nvim-autopairs",
@@ -81,10 +80,7 @@ return require('packer').startup(function(use)
         },
     })
 
-    use {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        event = "InsertEnter",
-    }
+    --copilot
+    use 'github/copilot.vim'
 end)
 

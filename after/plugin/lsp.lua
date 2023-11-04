@@ -63,69 +63,37 @@ require('mason-lspconfig').setup({
     },
 })
 
-local check_backspace = function()
-    local col = vim.fn.col "." - 1
-    return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
-end
-
 local cmp = require('cmp')
-local luasnip = require('luasnip')
 
-local cmp_select = {behavior = cmp.SelectBehavior.Select}
+local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
 local cmp_mappings = {
     ['<C-k>'] = cmp.mapping.select_prev_item(cmp_select),
     ['<C-j>'] = cmp.mapping.select_next_item(cmp_select),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
     ["<C-Space>"] = cmp.mapping.complete(),
-    ["<Tab>"] = cmp.mapping(
-    function(fallback)
-        if cmp.visible() then
-            cmp.select_next_item()
-        elseif luasnip.expandable() then
-            luasnip.expand()
-        elseif luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-        elseif check_backspace() then
-            fallback()
-        else
-            fallback()
-        end
-    end,
-    {
-        "i",
-        "s",
-    }),
-    ["<S-Tab>"] = cmp.mapping(
-    function(fallback)
-        if cmp.visible() then
-            cmp.select_prev_item()
-        elseif luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-        else
-            fallback()
-        end
-    end,
-    {
-        "i",
-        "s",
-    }),
 }
 
 cmp.setup({
     formating = lsp_zero.cmp_format(),
     mapping = cmp.mapping.preset.insert(cmp_mappings),
     sources = {
-        {name = 'path'},
-        {name = 'nvim_lsp'},
-        {name = 'nvim_lua'},
-        {name = 'buffer', keyword_length = 3},
-        {name = 'luasnip', keyword_length = 2},
+        { name = 'path' },
+        { name = 'nvim_lsp' },
+        { name = 'nvim_lua' },
+        { name = 'buffer', keyword_length = 3 },
+        { name = 'luasnip', keyword_length = 2 },
     }
 })
 
 vim.diagnostic.config({
-    virtual_text = true
+  virtual_text = true,
+  severity_sort = true,
+  float = {
+    style = 'minimal',
+    border = 'rounded',
+    source = 'always',
+    header = '',
+    prefix = '',
+  },
 })
-
-vim.lsp.set_log_level("debug")
