@@ -49,3 +49,15 @@ vim.keymap.set("n", "<C-k>", "<cmd> TmuxNavigateUp<CR>")
 
 -- git
 vim.api.nvim_set_keymap('n', "<leader>gm", "<cmd> LazyGit<CR>", opts)
+
+-- test
+vim.api.nvim_set_keymap('n', "<leader>rt", "<cmd> TestAtCursor<CR>", opts)
+
+vim.cmd [[
+    command! -nargs=? TestAtCursor lua require'tuliopaim.dotnet-test'.test_at_cursor(<q-args>)
+]]
+
+vim.cmd [[
+    command! -nargs=? TestClass lua require'tuliopaim.dotnet-test'.test_class(<q-args>)
+]]
+
