@@ -60,7 +60,13 @@ local show_test_results = function(output)
     vim.api.nvim_win_set_cursor(0, {lines_count, 0})
 end
 
-local run_test_cmd = function(testCmd)
+local run_test_and_print = function(testCmd)
+    local output = vim.fn.system(testCmd)
+
+    show_test_results(output)
+end
+
+local run_test_cmd_in_terminal = function(testCmd)
 
     vim.cmd("split | terminal")
 
@@ -68,6 +74,38 @@ local run_test_cmd = function(testCmd)
 
     vim.cmd(command)
 end
+
+local tmux_is_running = function()
+  local tmux_running = os.execute("pgrep tmux > /dev/null")
+  local in_tmux = vim.fn.exists('$TMUX') == 1
+  if tmux_running == 0 and in_tmux then
+    return true
+  end
+  return false
+end
+
+local run_test_cmd_in_tmux = function(testCmd)
+    if not tmux_is_running() then
+        print('tmux is not running, running tests and printing results')
+        run_test_and_print(testCmd)
+        return
+    end
+
+    local session_name = 'dotnet-test'
+
+    local tmux_session_check = os.execute("tmux has-session -t=" .. session_name .. " 2> /dev/null")
+    if tmux_session_check ~= 0 then
+        os.execute("tmux new-session -ds " .. session_name)
+    end
+
+    os.execute("tmux switch-client -t " .. session_name)
+
+    os.execute("tmux send-keys -t " .. session_name .. " C-c")
+
+    os.execute("tmux send-keys -t " .. session_name .. " '" .. testCmd .. "'")
+
+end
+
 
 local M = {}
 
@@ -82,9 +120,7 @@ M.test_at_cursor = function()
 
     local cmd = string.format("dotnet test --filter FullyQualifiedName~%s.%s", class_name, test_name)
 
-    local output = vim.fn.system(cmd)
-
-    show_test_results(output)
+    run_test_cmd_in_tmux(cmd)
 end
 
 M.test_class = function()
@@ -92,9 +128,7 @@ M.test_class = function()
 
     local cmd = string.format("dotnet test --filter FullyQualifiedName~%s", class_name)
 
-    local output = vim.fn.system(cmd)
-
-    show_test_results(output)
+    run_test_cmd_in_tmux(cmd)
 end
 
 return M
