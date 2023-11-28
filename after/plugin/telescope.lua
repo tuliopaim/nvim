@@ -12,7 +12,7 @@ vim.keymap.set('n', '<leader>ff', function()
     builtin.find_files({ hidden= true })
 end);
 
-vim.keymap.set('n', '<C>t', builtin.git_files, {})
+vim.keymap.set('n', '<C-t>', builtin.git_files, {})
 vim.keymap.set('n', '<leader>fs', function() builtin.grep_string(); end)
 
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
