@@ -8,7 +8,6 @@ return require('packer').startup(function(use)
 
     -- Telescope
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.1',
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
         requires = {
             {'nvim-lua/plenary.nvim'},
@@ -57,7 +56,8 @@ return require('packer').startup(function(use)
             {'saadparwaiz1/cmp_luasnip'},
             {'L3MON4D3/LuaSnip'},
             {'rafamadriz/friendly-snippets'},
-            {'Decodetalkers/csharpls-extended-lsp.nvim'}
+            {'Decodetalkers/csharpls-extended-lsp.nvim'},
+            { 'jmederosalvarado/roslyn.nvim' }
         }
     }
 

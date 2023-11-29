@@ -27,36 +27,33 @@ end)
 local lspconfig = require('lspconfig')
 
 --local csharp_ls_bin = "/usr/local/share/csharp-language-server/src/CSharpLanguageServer/bin/Debug/net7.0/CSharpLanguageServer"
-local csharp_ls_config = {
-    --cmd = { csharp_ls_bin }, -- specify if you build project locally (modify csharp_ls_bin path first), otherwise download using `dotnet tools` & keep that like ignored
-
-    handlers = {
-        ["textDocument/definition"] = require('csharpls_extended').handler,
-    },
-
-    root_dir = function(startpath)
-        return lspconfig.util.root_pattern("*.sln")(startpath)
-        or lspconfig.util.root_pattern("*.csproj")(startpath)
-        or lspconfig.util.root_pattern("*.fsproj")(startpath)
-        or lspconfig.util.root_pattern(".git")(startpath)
-    end,
-
-    on_attach = lsp_zero.on_attach,
-}
+--local csharp_ls_config = {
+--    --cmd = { csharp_ls_bin }, -- specify if you build project locally (modify csharp_ls_bin path first), otherwise download using `dotnet tools` & keep that like ignored
+--
+--    handlers = {
+--        ["textDocument/definition"] = require('csharpls_extended').handler,
+--    },
+--
+--    root_dir = function(startpath)
+--        return lspconfig.util.root_pattern("*.sln")(startpath)
+--        or lspconfig.util.root_pattern("*.csproj")(startpath)
+--        or lspconfig.util.root_pattern("*.fsproj")(startpath)
+--        or lspconfig.util.root_pattern(".git")(startpath)
+--    end,
+--
+--    on_attach = lsp_zero.on_attach,
+--}
 
 require('mason').setup({})
 require('mason-lspconfig').setup({
     ensure_installed = {
         'tsserver',
         'eslint',
-        'lua_ls',
-        'csharp_ls'
+        'lua_ls'
     },
     handlers = {
         lsp_zero.default_setup,
-        csharp_ls = function()
-            lspconfig.csharp_ls.setup(csharp_ls_config)
-        end,
+
         lua_ls = function()
             local lua_opts = lsp_zero.nvim_lua_ls()
             lspconfig.lua_ls.setup(lua_opts)
@@ -97,4 +94,12 @@ vim.diagnostic.config({
     header = '',
     prefix = '',
   },
+})
+
+
+require("roslyn").setup({
+    dotnet_cmd = "dotnet", -- this is the default
+    roslyn_version = "4.8.0-3.23475.7", -- this is the default
+    on_attach = lsp_zero.on_attach,
+    capabilities = lsp_zero.capabilities,
 })
