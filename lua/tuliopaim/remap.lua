@@ -6,6 +6,8 @@ local opts = { noremap = true, silent = true }
 --Remap space as leader key
 vim.api.nvim_set_keymap("", "<Space>", "<Nop>", opts)
 
+vim.cmd("command W w")
+
 -- Normal --
 -- Better window navigation
 vim.api.nvim_set_keymap('n', "<C-d>", "<C-d>zz", opts)
