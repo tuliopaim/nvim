@@ -8,7 +8,7 @@ return require('packer').startup(function(use)
 
     -- Telescope
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.4',
+        'nvim-telescope/telescope.nvim', tag = '0.1.5',
         requires = {
             {'nvim-lua/plenary.nvim'},
             {'nvim-telescope/telescope-ui-select.nvim'}
@@ -32,9 +32,17 @@ return require('packer').startup(function(use)
         requires = { 'nvim-tree/nvim-web-devicons', opt = true }
     }
 
-    use 'romgrk/barbar.nvim'
+    use {
+        'romgrk/barbar.nvim',
+    }
 
-    use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
+
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = ':TSUpdate',
+        tag = 'v0.9.1'
+    }
+
     use 'mbbill/undotree'
 
     -- LSP
@@ -92,5 +100,6 @@ return require('packer').startup(function(use)
         "ThePrimeagen/harpoon",
         requires = {"nvim-lua/plenary.nvim"},
     }
+
 end)
 

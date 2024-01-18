@@ -51,7 +51,7 @@ nvim_tree.setup {
         timeout = 500,
     },
     view = {
-        width = 30,
+        preserve_window_proportions = true,
         hide_root_folder = false,
         side = "left",
         mappings = {
@@ -62,8 +62,8 @@ nvim_tree.setup {
             { key = "v", cb = tree_cb "vsplit" },
             },
         },
-        number = false,
-        relativenumber = false,
+        number = true,
+        relativenumber = true,
     },
     renderer = {
         highlight_git = true,
@@ -72,15 +72,15 @@ nvim_tree.setup {
             show = {
                 file = true,
                 folder = true,
-                folder_arrow = true,
+                folder_arrow = false,
                 git = true,
             },
             glyphs = {
                 default = "",
                 symlink = "",
                 git = {
-                    unstaged = "",
-                    staged = "S",
+                    unstaged = "u",
+                    staged = "s",
                     unmerged = "",
                     renamed = "➜",
                     deleted = "",
