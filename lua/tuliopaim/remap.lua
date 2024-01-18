@@ -67,14 +67,7 @@ vim.keymap.set('n', "<leader>gj", function() require('harpoon.ui').nav_prev()end
 vim.keymap.set('n', '<leader>ff', function()
 
 end);
--- test
+
+-- dotnet test
+
 vim.api.nvim_set_keymap('n', "<leader>rt", "<cmd> TestAtCursor<CR>", opts)
-
-vim.cmd [[
-    command! -nargs=? TestAtCursor lua require'tuliopaim.dotnet-test'.test_at_cursor(<q-args>)
-]]
-
-vim.cmd [[
-    command! -nargs=? TestClass lua require'tuliopaim.dotnet-test'.test_class(<q-args>)
-]]
-

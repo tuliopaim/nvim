@@ -1,3 +1,4 @@
+require("tuliopaim.commands")
 require("tuliopaim.remap")
 require("tuliopaim.dotnet-test")
 require("tuliopaim.packer")
