@@ -83,7 +83,7 @@ return require('packer').startup(function(use)
     -- tmux
     use "christoomey/vim-tmux-navigator"
 
-    -- lazygit
+    -- git
     use({
         "kdheepak/lazygit.nvim",
         -- optional for floating window border decoration
@@ -91,6 +91,8 @@ return require('packer').startup(function(use)
             "nvim-lua/plenary.nvim",
         },
     })
+
+    use 'tpope/vim-fugitive'
 
     --copilot
     use 'github/copilot.vim'
