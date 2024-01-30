@@ -69,6 +69,10 @@ return require('packer').startup(function(use)
     }
 
     use {
+        "nvimtools/none-ls.nvim"
+    }
+
+    use {
         "windwp/nvim-autopairs",
         config = function() require("nvim-autopairs").setup {} end
     }
