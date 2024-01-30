@@ -36,7 +36,6 @@ return require('packer').startup(function(use)
         'romgrk/barbar.nvim',
     }
 
-
     use {
         'nvim-treesitter/nvim-treesitter',
         run = ':TSUpdate',
@@ -101,6 +100,12 @@ return require('packer').startup(function(use)
     use {
         "ThePrimeagen/harpoon",
         requires = {"nvim-lua/plenary.nvim"},
+    }
+
+    -- trouble
+    use {
+        "folke/trouble.nvim",
+        requires = { "kyazdani42/nvim-web-devicons" },
     }
 
 end)
