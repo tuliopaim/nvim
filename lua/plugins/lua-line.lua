@@ -89,7 +89,7 @@ return {
 				lualine_b = { branch, filename },
 				lualine_c = { diagnostics },
 				lualine_x = {},
-				lualine_y = { buffers },
+				lualine_y = { },
 				lualine_z = { location },
 			},
 			inactive_sections = {

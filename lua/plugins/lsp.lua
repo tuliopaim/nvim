@@ -22,7 +22,7 @@ local on_attach = function(client, bufnr)
 
     map("K", vim.lsp.buf.hover, "Hover Documentation")
     map("<leader>k", vim.diagnostic.open_float, "Float Documentation")
-    map("<leader>sh", vim.lsp.buf.signature_help, "Signature Help")
+    map("<leader>sp", vim.lsp.buf.signature_help, "Signature Help")
 
     if client.server_capabilities.documentFormattingProvider then
         vim.api.nvim_buf_create_user_command(
@@ -42,16 +42,12 @@ return {
 
     {
         "williamboman/mason-lspconfig.nvim",
-        event = "BufReadPre",
+        event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             "neovim/nvim-lspconfig",
-            -- plugins to setup lsp servers
             "folke/neodev.nvim",
             "jmederosalvarado/roslyn.nvim",
             "Decodetalkers/csharpls-extended-lsp.nvim",
-
-            -- better ui for lsp progress
-            { "j-hui/fidget.nvim", tag = "legacy", config = true },
         },
         config = function()
             vim.diagnostic.config({
