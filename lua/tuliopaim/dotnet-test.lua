@@ -37,75 +37,19 @@ local get_test_name = function()
     return get_node_text(node)
 end
 
-local show_test_results = function(output)
-    -- Create a new horizontal split and set it to 10 lines high.
-    vim.cmd('botright 20new')
-
-    -- Get the buffer number of the current buffer (which is the new split).
-    local bufnr = vim.api.nvim_get_current_buf()
-
-    -- Set the buffer to be a scratch buffer.
-    vim.api.nvim_buf_set_option(bufnr, 'buftype', 'nofile')
-    vim.api.nvim_buf_set_option(bufnr, 'swapfile', false)
-    vim.api.nvim_buf_set_option(bufnr, 'bufhidden', 'wipe')
-    vim.api.nvim_buf_set_option(bufnr, 'filetype', 'dotnet-test-output')
-
-    -- Insert the output into the buffer.
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, vim.split(output, '\n'))
-
-    -- Get the number of lines in the buffer.
-    local lines_count = vim.api.nvim_buf_line_count(bufnr)
-
-    -- Go to the end of the buffer.
-    vim.api.nvim_win_set_cursor(0, {lines_count, 0})
-end
-
 local run_test_and_print = function(testCmd)
-    local output = vim.fn.system(testCmd)
+   -- Open a new split window at the bottom
+    vim.cmd('botright split')
 
-    show_test_results(output)
+    -- Adjust the height of the new split window if necessary
+    vim.cmd('resize 20')
+
+    -- Run 'dotnet test' command in Neovim's terminal
+    vim.cmd('terminal ' .. testCmd)
+
+    -- Optionally, switch to normal mode immediately after opening the terminal
+    vim.cmd('startinsert!')
 end
-
-local run_test_cmd_in_terminal = function(testCmd)
-
-    vim.cmd("split | terminal")
-
-    local command = ':call jobsend(b:terminal_job_id, "' .. testCmd ..'\\n")'
-
-    vim.cmd(command)
-end
-
-local tmux_is_running = function()
-  local tmux_running = os.execute("pgrep tmux > /dev/null")
-  local in_tmux = vim.fn.exists('$TMUX') == 1
-  if tmux_running == 0 and in_tmux then
-    return true
-  end
-  return false
-end
-
-local run_test_cmd_in_tmux = function(testCmd)
-    if not tmux_is_running() then
-        print('tmux is not running, running tests and printing results')
-        run_test_and_print(testCmd)
-        return
-    end
-
-    local session_name = 'dotnet-test'
-
-    local tmux_session_check = os.execute("tmux has-session -t=" .. session_name .. " 2> /dev/null")
-    if tmux_session_check ~= 0 then
-        os.execute("tmux new-session -ds " .. session_name)
-    end
-
-    os.execute("tmux switch-client -t " .. session_name)
-
-    os.execute("tmux send-keys -t " .. session_name .. " C-c")
-
-    os.execute("tmux send-keys -t " .. session_name .. " '" .. testCmd .. "'")
-
-end
-
 
 local M = {}
 
@@ -118,9 +62,11 @@ M.test_at_cursor = function()
         return
     end
 
-    local cmd = string.format("dotnet test --filter FullyQualifiedName~%s.%s", class_name, test_name)
+    local cmd = string.format('dotnet test --filter "%s.%s"', class_name, test_name)
 
-    run_test_cmd_in_tmux(cmd)
+    print("Running test: " .. cmd)
+
+    run_test_and_print(cmd)
 end
 
 M.test_class = function()
@@ -128,7 +74,7 @@ M.test_class = function()
 
     local cmd = string.format("dotnet test --filter FullyQualifiedName~%s", class_name)
 
-    run_test_cmd_in_tmux(cmd)
+    run_test_and_print(cmd)
 end
 
 return M
