@@ -16,7 +16,7 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("plugins")
-
-require("tuliopaim.user-secrets")
-require("tuliopaim.dotnet-test")
+require("lazy").setup({
+    spec = "plugins",
+    change_detection = { notify = false },
+})

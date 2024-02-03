@@ -1,6 +1,6 @@
 return {
     "dotnet-tools",
-    dir = "/usr/local/share/.dotfiles/nvim/.config/nvim/lua/tuliopaim/dotnet-tools",
+    dir = "~/.dotfiles/nvim/.config/nvim/lua/tuliopaim/dotnet-tools",
     event = "VeryLazy",
     keys = {
         {

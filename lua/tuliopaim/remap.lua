@@ -1,5 +1,5 @@
 vim.g.mapleader = ' '
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>ntw", vim.cmd.Ex)
 
 local opts = { noremap = true, silent = true }
 
@@ -21,6 +21,9 @@ vim.api.nvim_set_keymap("n", "<leader>sj", ":resize -2<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>sh", ":vertical resize -2<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>sl", ":vertical resize +2<CR>", opts)
 
+vim.api.nvim_set_keymap("n", "gj", ":bp<CR>", opts)
+vim.api.nvim_set_keymap("n", "gk", ":bn<CR>", opts)
+
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
@@ -39,15 +42,4 @@ vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 --
 vim.api.nvim_set_keymap('n', "<leader>rt", "<cmd> TestAtCursor<CR>", opts)
 
-vim.cmd [[
-    command! -nargs=? TestAtCursor lua require'tuliopaim.dotnet-test'.test_at_cursor(<q-args>)
-]]
-
-vim.cmd [[
-    command! -nargs=? TestClass lua require'tuliopaim.dotnet-test'.test_class(<q-args>)
-]]
-
-vim.cmd [[
-    command! -nargs=? UserSecrets lua require'tuliopaim.user-secrets'.open_or_create_secrets_file()
-]]
 
