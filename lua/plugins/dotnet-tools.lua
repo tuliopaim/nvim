@@ -15,6 +15,8 @@ return {
         },
     },
     config = function()
-        require("dotnet-tools").setup()
+        require("dotnet-tools").setup({
+            script_path = "~/.local/share/JetBrains/Toolbox/scripts/rider"
+        })
     end
 }

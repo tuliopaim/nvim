@@ -38,16 +38,13 @@ local get_test_name = function()
 end
 
 local run_test_and_print = function(testCmd)
-   -- Open a new split window at the bottom
+
     vim.cmd('botright split')
 
-    -- Adjust the height of the new split window if necessary
     vim.cmd('resize 20')
 
-    -- Run 'dotnet test' command in Neovim's terminal
     vim.cmd('terminal ' .. testCmd)
 
-    -- Optionally, switch to normal mode immediately after opening the terminal
     vim.cmd('startinsert!')
 end
 

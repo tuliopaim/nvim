@@ -13,7 +13,12 @@ M.get_function_name_with_treesitter = function()
         local node = root:named_descendant_for_range(line, col, line, col)
         while node do
             if node:type() == 'method_declaration' or node:type() == 'function_declaration' then -- Adjust the type according to Treesitter's C# queries
-                local name_node = node:child(3) -- Assuming the function name is the second child, adjust as necessary
+                local name_node = node:child(3)
+
+                if name_node and vim.treesitter.get_node_text(name_node, 0) == 'Task' then
+                    name_node = node:child(4)
+                end
+
                 if name_node then
                     local function_name = vim.treesitter.get_node_text(name_node, 0)
                     print("Function name: " .. function_name)
