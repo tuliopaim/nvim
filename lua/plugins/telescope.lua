@@ -38,9 +38,7 @@ return {
 
             vim.keymap.set('n', '<C-p>', builtin.git_files, {})
 
-            vim.keymap.set('n', '<leader>fs', function()
-                builtin.grep_string({ search = vim.fn.input("Grep > ") })
-            end)
+            vim.keymap.set('n', '<leader>fs', builtin.live_grep, {})
 
             vim.keymap.set('n', '<leader>fws', function()
                 local word = vim.fn.expand("<cword>")
@@ -54,7 +52,15 @@ return {
 
             vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 
-            vim.keymap.set('n', '<leader>vh', builtin.help_tags, {})
+            vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = "[?] [S]earch [H]elp" })
+
+            vim.keymap.set("n", "<leader>?", builtin.oldfiles, { desc = "[?] Find recently opened files" })
+
+            vim.keymap.set("n", "<leader>ss", function()
+                require("telescope.builtin").spell_suggest(require("telescope.themes").get_dropdown({
+                    previewer = false,
+                }))
+            end, { desc = "[S]earch [S]pelling suggestions" })
 
             -- worktree
             vim.keymap.set('n', '<leader>fwt', function()

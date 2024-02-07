@@ -1,4 +1,5 @@
 local on_attach = function(client, bufnr)
+
     local map = function(keys, func, desc)
         if desc then
             desc = "LSP: " .. desc
@@ -6,6 +7,15 @@ local on_attach = function(client, bufnr)
 
         vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
     end
+
+    local imap = function(keys, func, desc)
+        if desc then
+            desc = "LSP: " .. desc
+        end
+
+        vim.keymap.set("i", keys, func, { buffer = bufnr, desc = desc })
+    end
+
 
     map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
     map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
@@ -15,6 +25,7 @@ local on_attach = function(client, bufnr)
     map("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
 
     local telescope_builtin = require("telescope.builtin")
+
     map("gi", telescope_builtin.lsp_implementations, "[G]o to [I]mplementations")
 
     map("<leader>ds", telescope_builtin.lsp_document_symbols, "[D]ocument [S]ymbols")
@@ -22,7 +33,17 @@ local on_attach = function(client, bufnr)
 
     map("K", vim.lsp.buf.hover, "Hover Documentation")
     map("<leader>k", vim.diagnostic.open_float, "Float Documentation")
-    map("<leader>sp", vim.lsp.buf.signature_help, "Signature Help")
+
+    map("<leader>K", vim.lsp.buf.signature_help, "Signature Help")
+    imap("<c-k>", vim.lsp.buf.signature_help, "Signature Help")
+
+    map("gr", telescope_builtin.lsp_references, "LSP: [G]oto [R]eferences")
+
+	map("gi", telescope_builtin.lsp_implementations, "LSP: [G]oto [I]mplementation")
+
+	map("<leader>ds", telescope_builtin.lsp_document_symbols, "LSP: [B]uffer [S]ymbols")
+
+	map("<leader>ws", telescope_builtin.lsp_workspace_symbols, "LSP: [P]roject [S]ymbols")
 
     if client.server_capabilities.documentFormattingProvider then
         vim.api.nvim_buf_create_user_command(
@@ -45,11 +66,13 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             "neovim/nvim-lspconfig",
+			"hrsh7th/cmp-nvim-lsp",
             "folke/neodev.nvim",
             "jmederosalvarado/roslyn.nvim",
             "Decodetalkers/csharpls-extended-lsp.nvim",
         },
         config = function()
+
             vim.diagnostic.config({
                 virtual_text = true,
                 severity_sort = true,
@@ -61,6 +84,7 @@ return {
                     prefix = '',
                 },
             })
+
             local cmp_nvim_lsp = require("cmp_nvim_lsp")
             local capabilities = vim.tbl_deep_extend(
                 "force",
@@ -76,12 +100,20 @@ return {
             })
 
             require("mason-lspconfig").setup()
+
+            -- Default handlers for LSP
+			local default_handlers = {
+				["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
+				["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
+			}
+
             require("mason-lspconfig").setup_handlers({
-                -- The first entry (without a key) will be the default handler
-                function(server_name) -- default handler (optional)
+
+                function(server_name)
                     require("lspconfig")[server_name].setup({
                         on_attach = on_attach,
                         capabilities = capabilities,
+                        handlers = vim.tbl_deep_extend("force", {}, default_handlers),
                     })
                 end,
 
@@ -97,6 +129,7 @@ return {
                                 workspace = { checkThirdParty = false },
                             },
                         },
+                        handlers = vim.tbl_deep_extend("force", {}, default_handlers),
                     })
                 end,
 
@@ -105,6 +138,8 @@ return {
                     lspconfig.csharp_ls.setup({
                         handlers = {
                             ["textDocument/definition"] = require('csharpls_extended').handler,
+                            ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
+                            ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
                         },
 
                         root_dir = function(startpath)
@@ -133,6 +168,9 @@ return {
 				end,
 
 			})
+
+            -- Configure borderd for LspInfo ui
+			require("lspconfig.ui.windows").default_options.border = "rounded"
 		end,
 	},
     {

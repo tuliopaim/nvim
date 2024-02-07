@@ -9,7 +9,7 @@ return {
     keys = {
         { "<leader>e", ":Neotree toggle<CR>", desc = "Toggle neotree" },
         { "<leader>.", ":Neotree focus<CR>", desc = "Toggle neotree" },
-        { "<leader>bf", ":Neotree buffers reveal float<CR>", desc = "Reveal buffers" },
+        { "<leader>sb", ":Neotree buffers reveal float<CR>", desc = "Reveal buffers" },
         { "<leader>ha", ":Neotree close<CR>", desc = "Toggle neotree" },
     },
     config = function()
