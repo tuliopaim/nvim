@@ -16,7 +16,6 @@ local on_attach = function(client, bufnr)
         vim.keymap.set("i", keys, func, { buffer = bufnr, desc = desc })
     end
 
-
     map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
     map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
@@ -33,17 +32,12 @@ local on_attach = function(client, bufnr)
 
     map("K", vim.lsp.buf.hover, "Hover Documentation")
     map("<leader>k", vim.diagnostic.open_float, "Float Documentation")
-
     map("<leader>K", vim.lsp.buf.signature_help, "Signature Help")
     imap("<c-k>", vim.lsp.buf.signature_help, "Signature Help")
 
     map("gr", telescope_builtin.lsp_references, "LSP: [G]oto [R]eferences")
 
 	map("gi", telescope_builtin.lsp_implementations, "LSP: [G]oto [I]mplementation")
-
-	map("<leader>ds", telescope_builtin.lsp_document_symbols, "LSP: [B]uffer [S]ymbols")
-
-	map("<leader>ws", telescope_builtin.lsp_workspace_symbols, "LSP: [P]roject [S]ymbols")
 
     if client.server_capabilities.documentFormattingProvider then
         vim.api.nvim_buf_create_user_command(

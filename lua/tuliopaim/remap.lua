@@ -50,11 +50,11 @@ vim.keymap.set("n", "*", "*zz")
 vim.keymap.set("n", "#", "#zz")
 
 -- greatest remap ever
-vim.keymap.set("x", "<leader>p", "\"0p")
+vim.keymap.set("v", "<leader>p", "\"0p")
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
--- Press 'S' for quick find/replace for the word under the cursor
+-- Press '<leader>fr' for quick find/replace for the word under the cursor
 vim.keymap.set("n", "<leader>fr", function()
 	local cmd = ":%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>"
 	local keys = vim.api.nvim_replace_termcodes(cmd, true, false, true)
@@ -102,9 +102,6 @@ vim.keymap.set("n", "<leader>ld", vim.diagnostic.setqflist, { desc = "Quickfix [
 
 -- Turn off highlighted results
 vim.keymap.set("n", "<leader>no", "<cmd>noh<cr>")
-
--- Git keymaps --
-vim.keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame<cr>")
 
 vim.keymap.set("n", "<leader>oc", function()
 	require("copilot.panel").open({})
