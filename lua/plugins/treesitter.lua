@@ -28,6 +28,8 @@ return {
                 highlight = { enable = true },
                 indent = { enable = true },
             })
+
+            vim.treesitter.language.register("c_sharp", "csharp")
         end
     }
 }

@@ -22,8 +22,8 @@ return {
     {
         "seblj/roslyn.nvim",
         ft = "cs",
-        opts = {
-            config = {
+        config = function()
+            vim.lsp.config("roslyn", {
                 cmd = {
                     "dotnet",
                     "/Users/tuliopaim/.local/share/nvim/roslyn/Microsoft.CodeAnalysis.LanguageServer.dll",
@@ -40,8 +40,9 @@ return {
                         vim.lsp.handlers["textDocument/hover"](err, result, ctx, config)
                     end,
                 },
-            },
-        }
+            })
+            require("roslyn").setup()
+        end,
     },
 
     { "williamboman/mason.nvim", config = true },
@@ -130,7 +131,6 @@ return {
                     "docker_compose_language_service",
                     "dockerls",
                     "eslint",
-                    "rnix",
                     "ts_ls",
                     "pylsp"
                 },
