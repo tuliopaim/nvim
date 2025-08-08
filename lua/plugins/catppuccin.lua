@@ -27,6 +27,9 @@ return {
                 treesitter_context = true,
             },
             transparent_background = true,
+            float = {
+                transparent = true,
+            },
         })
 
         vim.cmd.colorscheme "catppuccin"
