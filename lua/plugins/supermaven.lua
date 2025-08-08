@@ -3,6 +3,7 @@ return {
     enabled = false,
     config = function()
         require("supermaven-nvim").setup({
+            ignore_filetypes = { "markdown" },
             keymaps = {
                 accept_suggestion = "<Tab>",
                 clear_suggestion = "<C-]>",
