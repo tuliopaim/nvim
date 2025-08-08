@@ -2,6 +2,7 @@ return {
     {
 		"zbirenbaum/copilot.lua",
         command = "Copilot",
+        enabled = true,
 		event = { "BufEnter", "InsertEnter" },
 		config = function()
 			require("copilot").setup({
@@ -11,7 +12,7 @@ return {
 					enabled = true,
                     auto_trigger = true,
                     keymap = {
-                        accept = "<right>",
+                        accept = "<Tab>",
                         next = "<down>",
                         prev = "<up>",
                         dismiss = "<CR>",

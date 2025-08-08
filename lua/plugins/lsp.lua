@@ -124,7 +124,6 @@ return {
                 },
             }
 
-            -- Setup mason-lspconfig
             require("mason-lspconfig").setup {
                 ensure_installed = {
                     "cssls",
@@ -134,11 +133,9 @@ return {
                     "ts_ls",
                     "pylsp"
                 },
-                -- Note: in v2.0.0, automatic_enable was replaced with automatic_installation
                 automatic_installation = true
             }
 
-            -- Configure borderd for LspInfo ui
             require("lspconfig.ui.windows").default_options.border = "rounded"
         end,
     }
