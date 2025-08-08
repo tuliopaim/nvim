@@ -13,6 +13,9 @@ return {
 	},
     {
 		"sindrets/diffview.nvim",
-		event = "VeryLazy"
-	},
+		event = "VeryLazy",
+        config = function()
+            vim.api.nvim_create_user_command('Gd', 'DiffviewOpen', {})
+        end,
+	}
 }

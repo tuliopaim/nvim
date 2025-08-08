@@ -143,10 +143,14 @@ vim.api.nvim_create_user_command("TODO", function()
     -- Set some window options
     vim.api.nvim_win_set_option(win, "winblend", 0)
     vim.api.nvim_win_set_option(win, "wrap", true)
+    vim.api.nvim_win_set_option(win, "relativenumber", true)
+    vim.api.nvim_win_set_option(win, "number", true)
 
     -- Try to read the file into the buffer
     vim.api.nvim_command("edit " .. file_path)
 end, {})
+
+vim.keymap.set("n", "<leader>td", ":TODO<CR>", { desc = "[T]o [D]o" })
 
 -- Avante
 vim.api.nvim_create_user_command('AvanteReset', function()
