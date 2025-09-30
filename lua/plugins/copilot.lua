@@ -15,7 +15,6 @@ return {
                         accept = "<Tab>",
                         next = "<down>",
                         prev = "<up>",
-                        dismiss = "<CR>",
                     }
 				},
 				panel = { enabled = false },
