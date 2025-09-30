@@ -3,6 +3,12 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
+    styles = {
+      notification_history = {
+        width = 0.8,
+        height = 0.8,
+      },
+    },
     image = { enabled = false },
     bigfile = { enabled = true },
     lazygit = { enabled = true },
@@ -11,15 +17,29 @@ return {
     dashboard = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
-    picker = { enabled = true, ui_select = true },
+    picker = {
+      enabled = true,
+      ui_select = true,
+      sources = {
+        explorer = {
+          layout = {
+            layout = {
+              width = 80,
+              min_width = 40,
+              position = "right",
+            },
+          },
+        },
+      },
+    },
     notifier = { enabled = true },
     quickfile = { enabled = true },
     statuscolumn = { enabled = true },
     words = { enabled = true },
+    explorer = { enabled = true },
   },
   keys = {
-    { "<leader>fs",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Find files - smart" },
-    { "<leader>ff",  function() Snacks.picker.files({ hidden = true }) end, desc = "Find files" },
+    { "<leader>ff",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Find files - smart" },
     { "<leader><leader>",  function() Snacks.picker.buffers() end, desc = "Find buffers" },
     { "<leader>fg",  function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>fw",  function() Snacks.picker.grep_word() end, desc = "Grep word" },
@@ -35,7 +55,7 @@ return {
     { "<leader>Z",  function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
     { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
     { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
-    { "<leader>n",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
+    { "<leader>nh",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
     { "<leader>db", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
     { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
