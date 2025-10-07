@@ -2,6 +2,12 @@ return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
+  config = function(_, opts)
+    local snacks = require("snacks")
+    snacks.setup(opts)
+    vim.ui.input = snacks.input.input
+    vim.ui.select = snacks.picker.select
+  end,
   opts = {
     styles = {
       notification_history = {
@@ -50,7 +56,7 @@ return {
     { "<leader>fk",  function() Snacks.picker.keymaps() end, desc = "Find keymaps" },
     { "<leader>fd",  function() Snacks.picker.diagnostics() end, desc = "Find diagnostics" },
     { "<leader>fn", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
-    { "<leader>es", function() Snacks.picker.explorer({ hidden = true }) end, desc = "Find Config File" },
+    { "<leader>es", function() Snacks.picker.explorer({ hidden = true }) end, desc = "Explorer with hidden files" },
     { "<leader>z",  function() Snacks.zen() end, desc = "Toggle Zen Mode" },
     { "<leader>Z",  function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
     { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
@@ -71,8 +77,8 @@ return {
       function()
         Snacks.win({
           file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-          width = 0.6,
-          height = 0.6,
+          width = 0.8,
+          height = 0.8,
           wo = {
             spell = false,
             wrap = false,

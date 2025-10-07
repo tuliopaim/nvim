@@ -2,7 +2,6 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
-        tag = 'v0.9.3',
         config = function()
             local config = require("nvim-treesitter.configs")
             config.setup({
@@ -16,13 +15,12 @@ return {
                     "json",
                     "lua",
                     "markdown",
+                    "markdown_inline",
                     "prisma",
                     "tsx",
                     "typescript",
                     "vim",
                     "c_sharp",
-                    "markdown",
-                    "markdown_inline"
                 },
                 auto_install = true,
                 highlight = { enable = true },

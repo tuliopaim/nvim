@@ -2,10 +2,9 @@ return {
     "nvimtools/none-ls.nvim",
     dependencies = {
         'nvimtools/none-ls-extras.nvim',
-        'jayp0521/mason-null-ls.nvim'
+        'jay-babu/mason-null-ls.nvim'
     },
     config = function()
-
         require("mason-null-ls").setup {
             ensure_installed = {
                 "ruff",
@@ -15,8 +14,6 @@ return {
             },
             automatic_installation = true
         }
-
-        require("null-ls").setup()
 
         local null_ls = require("null-ls")
 
