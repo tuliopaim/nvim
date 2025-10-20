@@ -45,7 +45,8 @@ return {
     explorer = { enabled = true },
   },
   keys = {
-    { "<leader>ff",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Find files - smart" },
+    { "<leader>ff",  function() Snacks.picker.files({ hidden = true }) end, desc = "Find files" },
+    { "<leader>fs",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Find files - smart" },
     { "<leader><leader>",  function() Snacks.picker.buffers() end, desc = "Find buffers" },
     { "<leader>fg",  function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>fw",  function() Snacks.picker.grep_word() end, desc = "Grep word" },
