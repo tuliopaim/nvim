@@ -1,3 +1,18 @@
+-- Helper to decode HTML entities in documentation
+local function decode_html_entities(text)
+	if not text then return text end
+	text = text:gsub("&nbsp;", " ")
+	text = text:gsub("&lt;", "<")
+	text = text:gsub("&gt;", ">")
+	text = text:gsub("&amp;", "&")
+	text = text:gsub("&quot;", '"')
+	text = text:gsub("&#39;", "'")
+	text = text:gsub("\\.", ".")
+	text = text:gsub("\\%(", "(")
+	text = text:gsub("\\%)", ")")
+	return text
+end
+
 local on_attach = function(_, bufnr)
 	vim.keymap.set("n", "gd", function()
 		Snacks.picker.lsp_definitions()
@@ -41,10 +56,14 @@ return {
 				on_attach = on_attach,
 				handlers = {
 					["textDocument/hover"] = function(err, result, ctx, config)
-						if result and result.contents and result.contents.value then
-							result.contents.value = result.contents.value:gsub("\\([^%w])", "%1")
+						if result and result.contents then
+							if type(result.contents) == "string" then
+								result.contents = decode_html_entities(result.contents)
+							elseif type(result.contents) == "table" and result.contents.value then
+								result.contents.value = decode_html_entities(result.contents.value)
+							end
 						end
-						vim.lsp.handlers["textDocument/hover"](err, result, ctx, config)
+						return vim.lsp.handlers.hover(err, result, ctx, config)
 					end,
 				},
 				settings = {
@@ -79,6 +98,24 @@ return {
 					prefix = "",
 				},
 			})
+
+			-- Configure LSP hover and signature help borders
+			local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+			function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+				opts = opts or {}
+				opts.border = opts.border or 'rounded'
+
+				-- Decode HTML entities in hover contents
+				if type(contents) == "table" then
+					for i, line in ipairs(contents) do
+						if type(line) == "string" then
+							contents[i] = decode_html_entities(line)
+						end
+					end
+				end
+
+				return orig_util_open_floating_preview(contents, syntax, opts, ...)
+			end
 
 			local capabilities = vim.tbl_deep_extend(
 				"force",
