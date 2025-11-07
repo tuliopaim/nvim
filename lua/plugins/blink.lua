@@ -1,8 +1,8 @@
 return {
     'saghen/blink.cmp',
+    event = "InsertEnter",
     dependencies = {
         'rafamadriz/friendly-snippets',
-        'Kaiser-Yang/blink-cmp-avante'
     },
     version = '*',
     opts = {
@@ -12,7 +12,7 @@ return {
             nerd_font_variant = 'mono'
         },
         signature = {
-          enabled = false,
+          enabled = true,
           trigger = {
             enabled = true,
           },
@@ -31,9 +31,8 @@ return {
             }
         },
         sources = {
-            default = { 'lsp', 'path', 'snippets', 'buffer', 'dadbod', 'avante'},
+            default = { 'lsp', 'path', 'snippets', 'buffer', 'dadbod' },
             providers = {
-                avante = { name = 'Avante',  module = 'blink-cmp-avante' },
                 dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
             }
         },

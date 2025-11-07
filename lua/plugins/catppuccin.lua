@@ -19,12 +19,7 @@ return {
                 mason = true,
                 native_lsp = { enabled = true },
                 notify = true,
-                nvimtree = true,
-                neotree = true,
-                symbols_outline = true,
-                telescope = false,
                 treesitter = true,
-                treesitter_context = true,
             },
             transparent_background = true,
             float = {
