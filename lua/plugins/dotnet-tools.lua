@@ -16,7 +16,7 @@ return {
     },
     config = function()
         require("dotnet-tools").setup({
-            script_path = "/home/tuliopaim/.nix-profile/bin/rider"
+            script_path = "/Applications/Rider.app/Contents/MacOS/rider"
         })
     end
 }
