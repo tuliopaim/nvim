@@ -14,9 +14,5 @@ return {
                 require("neotest-dotnet")
             }
         })
-
-        local neotest = require("neotest")
-
-        vim.api.nvim_create_user_command('TestDebug', function() neotest.run.run({strategy = "dap"}) end, {})
     end,
 }
