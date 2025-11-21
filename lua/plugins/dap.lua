@@ -17,26 +17,26 @@ return {
 			dap.adapters.netcoredbg = netcoredbg_adapter -- needed for normal debugging
 			dap.adapters.coreclr = netcoredbg_adapter -- needed for unit test debugging
 
-			dap.configurations.cs = {
-				{
-					type = "coreclr",
-					name = "Launch .NET App",
-					request = "launch",
-					program = function()
-						return require("dap-dll-autopicker").build_dll_path()
-					end,
-				},
-			}
+			-- Simplified configuration - actual config is built by dotnet-tools.dap
+			dap.configurations.cs = {}
 
 			local map = vim.keymap.set
 
 			local opts = { noremap = true, silent = true }
 
+			-- <leader>db launches custom dotnet-tools debug launcher
+			map("n", "<leader>db", function()
+				require("dotnet-tools.debug").start_debugging()
+			end, { noremap = true, silent = true, desc = "debug with launch settings" })
+
+			-- F5 continues execution (or starts debugging if not active)
 			map("n", "<F5>", "<Cmd>lua require'dap'.continue()<CR>", opts)
+
 			map("n", "<F6>", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>", opts)
 			map("n", "<F9>", "<Cmd>lua require'dap'.toggle_breakpoint()<CR>", opts)
 			map("n", "<F10>", "<Cmd>lua require'dap'.step_over()<CR>", opts)
 			map("n", "<F11>", "<Cmd>lua require'dap'.step_into()<CR>", opts)
+			map("n", "<leader>di", "<Cmd>lua require'dap'.step_into()<CR>", { noremap = true, silent = true, desc = "step into" })
 			map("n", "<F8>", "<Cmd>lua require'dap'.step_out()<CR>", opts)
 			-- map("n", "<F12>", "<Cmd>lua require'dap'.step_out()<CR>", opts)
 			map("n", "<leader>dT", "<Cmd>lua require'dap'.terminate()<CR>", opts)
