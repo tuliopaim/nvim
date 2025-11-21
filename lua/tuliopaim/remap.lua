@@ -151,9 +151,3 @@ vim.api.nvim_create_user_command("TODO", function()
 end, {})
 
 vim.keymap.set("n", "<leader>td", ":TODO<CR>", { desc = "[T]o [D]o" })
-
--- Avante
-vim.api.nvim_create_user_command('AvanteReset', function()
-    vim.cmd('AvanteClear')
-    vim.cmd('AvanteRefresh')
-end, {})

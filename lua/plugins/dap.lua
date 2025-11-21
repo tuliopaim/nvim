@@ -24,11 +24,6 @@ return {
 
 			local opts = { noremap = true, silent = true }
 
-			-- <leader>db launches custom dotnet-tools debug launcher
-			map("n", "<leader>db", function()
-				require("dotnet-tools.debug").start_debugging()
-			end, { noremap = true, silent = true, desc = "debug with launch settings" })
-
 			-- F5 continues execution (or starts debugging if not active)
 			map("n", "<F5>", "<Cmd>lua require'dap'.continue()<CR>", opts)
 
@@ -75,14 +70,14 @@ return {
 			end
 
 			vim.fn.sign_define("DapBreakpoint", {
-				text = "⚪",
+				text = "●",
 				texthl = "DapBreakpointSymbol",
 				linehl = "DapBreakpoint",
 				numhl = "DapBreakpoint",
 			})
 
 			vim.fn.sign_define("DapStopped", {
-				text = "🔴",
+				text = "→",
 				texthl = "yellow",
 				linehl = "DapBreakpoint",
 				numhl = "DapBreakpoint",

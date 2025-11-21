@@ -42,8 +42,9 @@ A comprehensive Neovim setup optimized for .NET/C# development with excellent fu
 - **roslyn.nvim** - Roslyn LSP integration for C# and .NET development with extended features
 - **neodev.nvim** - Neovim Lua API development setup with type definitions
 
-### Testing
+### Debugging & Testing
 
+- **nvim-dap** - Debug Adapter Protocol client with netcoredbg for .NET debugging with launch profile selection
 - **neotest** - Testing framework with .NET adapter (neotest-dotnet) and async IO support (nvim-nio)
 
 ### Formatting & Linting
