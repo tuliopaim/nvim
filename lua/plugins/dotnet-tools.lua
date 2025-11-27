@@ -8,7 +8,7 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 		event = "VeryLazy",
-		keys = {
+        		keys = {
 			{
 				"<leader>rt",
 				":DotnetTest<CR>",
@@ -33,6 +33,26 @@ return {
 				"<leader>dr",
 				":OpenInRider<CR>",
 				desc = "Open in Rider",
+			},
+			{
+				"<leader>na",
+				":DotnetNugetAdd<CR>",
+				desc = "Add NuGet package",
+			},
+			{
+				"<leader>nl",
+				":DotnetNugetList<CR>",
+				desc = "List NuGet packages",
+			},
+			{
+				"<leader>nu",
+				":DotnetNugetUpdate<CR>",
+				desc = "Update NuGet package",
+			},
+			{
+				"<leader>nr",
+				":DotnetNugetRemove<CR>",
+				desc = "Remove NuGet package",
 			},
 		},
 		config = function()
