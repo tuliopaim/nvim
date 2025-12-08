@@ -4,6 +4,19 @@ return {
 		"mfussenegger/nvim-dap",
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
+			"nvim-neotest/nvim-nio",
+		},
+		keys = {
+			{ "<F5>", "<Cmd>lua require'dap'.continue()<CR>", desc = "Continue debugging" },
+			{ "<F9>", "<Cmd>lua require'dap'.toggle_breakpoint()<CR>", desc = "Toggle breakpoint" },
+			{ "<F10>", "<Cmd>lua require'dap'.step_over()<CR>", desc = "Step over" },
+			{ "<F11>", "<Cmd>lua require'dap'.step_into()<CR>", desc = "Step into" },
+			{ "<F8>", "<Cmd>lua require'dap'.step_out()<CR>", desc = "Step out" },
+			{ "<leader>di", "<Cmd>lua require'dap'.step_into()<CR>", desc = "Step into" },
+			{ "<leader>dT", "<Cmd>lua require'dap'.terminate()<CR>", desc = "Terminate" },
+			{ "<leader>dD", "<Cmd>lua require'dap'.disconnect()<CR>", desc = "Disconnect" },
+			{ "<leader>dr", "<Cmd>lua require'dap'.repl.open()<CR>", desc = "Open REPL" },
+			{ "<leader>dl", "<Cmd>lua require'dap'.run_last()<CR>", desc = "Run last" },
 		},
 		config = function()
 			local dap = require("dap")
@@ -19,45 +32,19 @@ return {
 
 			-- Simplified configuration - actual config is built by dotnet-tools.dap
 			dap.configurations.cs = {}
-
-			local map = vim.keymap.set
-
-			local opts = { noremap = true, silent = true }
-
-			-- F5 continues execution (or starts debugging if not active)
-			map("n", "<F5>", "<Cmd>lua require'dap'.continue()<CR>", opts)
-
-			map("n", "<F6>", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>", opts)
-			map("n", "<F9>", "<Cmd>lua require'dap'.toggle_breakpoint()<CR>", opts)
-			map("n", "<F10>", "<Cmd>lua require'dap'.step_over()<CR>", opts)
-			map("n", "<F11>", "<Cmd>lua require'dap'.step_into()<CR>", opts)
-			map(
-				"n",
-				"<leader>di",
-				"<Cmd>lua require'dap'.step_into()<CR>",
-				{ noremap = true, silent = true, desc = "step into" }
-			)
-			map("n", "<F8>", "<Cmd>lua require'dap'.step_out()<CR>", opts)
-			-- map("n", "<F12>", "<Cmd>lua require'dap'.step_out()<CR>", opts)
-			map("n", "<leader>dT", "<Cmd>lua require'dap'.terminate()<CR>", opts)
-			map("n", "<leader>dd", "<Cmd>lua require'dap'.disconnect()<CR>", opts)
-			map("n", "<leader>dr", "<Cmd>lua require'dap'.repl.open()<CR>", opts)
-			map("n", "<leader>dl", "<Cmd>lua require'dap'.run_last()<CR>", opts)
-			map(
-				"n",
-				"<leader>dt",
-				"<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>",
-				{ noremap = true, silent = true, desc = "debug nearest test" }
-			)
 		end,
-		event = "VeryLazy",
 	},
-	{ "nvim-neotest/nvim-nio" },
 	{
 		-- UI for debugging
 		"rcarriga/nvim-dap-ui",
 		dependencies = {
 			"mfussenegger/nvim-dap",
+			"nvim-neotest/nvim-nio",
+		},
+		keys = {
+			{ "<leader>du", function() require("dapui").toggle() end, desc = "Toggle DAP UI" },
+			{ "<leader>dw", function() require("dapui").eval(nil, { enter = true }) end, mode = { "n", "v" }, desc = "Add to watches" },
+			{ "Q", function() require("dapui").eval() end, mode = { "n", "v" }, desc = "Hover eval" },
 		},
 		config = function()
 			local dapui = require("dapui")
@@ -120,52 +107,28 @@ return {
 					},
 				},
 			})
-
-			local map = vim.keymap.set
-
-			map("n", "<leader>du", function()
-				dapui.toggle()
-			end, { noremap = true, silent = true, desc = "Toggle DAP UI" })
-
-			map({ "n", "v" }, "<leader>dw", function()
-				require("dapui").eval(nil, { enter = true })
-			end, { noremap = true, silent = true, desc = "Add word under cursor to Watches" })
-
-			map({ "n", "v" }, "Q", function()
-				require("dapui").eval()
-			end, {
-				noremap = true,
-				silent = true,
-				desc = "Hover/eval a single value (opens a tiny window instead of expanding the full object) ",
-			})
 		end,
 	},
 	{
 		"nvim-neotest/neotest",
-		requires = {
-			{
-				"Issafalcon/neotest-dotnet",
-			},
-		},
 		dependencies = {
 			"nvim-neotest/nvim-nio",
 			"nvim-lua/plenary.nvim",
 			"antoinemadec/FixCursorHold.nvim",
 			"nvim-treesitter/nvim-treesitter",
+			"Issafalcon/neotest-dotnet",
 		},
-		conifig = function()
+		-- Only load when actually running tests
+		keys = {
+			{ "<F6>", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>", desc = "Debug nearest test" },
+			{ "<leader>dt", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>", desc = "Debug nearest test" },
+		},
+		config = function()
 			require("neotest").setup({
 				adapters = {
 					require("neotest-dotnet"),
 				},
 			})
 		end,
-	},
-	{
-		"Issafalcon/neotest-dotnet",
-		lazy = false,
-		dependencies = {
-			"nvim-neotest/neotest",
-		},
 	},
 }

@@ -2,6 +2,7 @@ return {
     {
         'echasnovski/mini.ai',
         version = false,
+        event = "VeryLazy", -- Text objects aren't needed immediately
         config = function()
             require('mini.ai').setup({
                 -- Number of lines within which textobject is searched

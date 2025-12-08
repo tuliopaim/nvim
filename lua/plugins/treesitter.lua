@@ -2,6 +2,7 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
+        event = { "BufReadPost", "BufNewFile" }, -- Load when opening a file
         config = function()
             local config = require("nvim-treesitter.configs")
             config.setup({

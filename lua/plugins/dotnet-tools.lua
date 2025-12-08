@@ -7,8 +7,8 @@ return {
 			"nvim-treesitter/nvim-treesitter",
 			"nvim-lua/plenary.nvim",
 		},
-		event = "VeryLazy",
-        		keys = {
+		ft = "cs", -- Only load for C# files
+		keys = {
 			{
 				"<leader>rt",
 				":DotnetTest<CR>",

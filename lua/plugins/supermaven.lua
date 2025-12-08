@@ -1,6 +1,7 @@
 return {
     "supermaven-inc/supermaven-nvim",
-    enabled = false,
+    enabled = true,
+    event = "InsertEnter", -- Only load when entering insert mode
     config = function()
         require("supermaven-nvim").setup({
             ignore_filetypes = { "markdown" },
