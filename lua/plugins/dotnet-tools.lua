@@ -58,6 +58,7 @@ return {
 		config = function()
 			require("dotnet-tools").setup({
 				rider_path = "/Applications/Rider.app/Contents/MacOS/rider",
+                flat_profiles = true,
 			})
 		end,
 	}
