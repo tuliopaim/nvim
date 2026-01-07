@@ -151,3 +151,5 @@ vim.api.nvim_create_user_command("TODO", function()
 end, {})
 
 vim.keymap.set("n", "<leader>td", ":TODO<CR>", { desc = "[T]o [D]o" })
+
+vim.keymap.set("n", "<leader>db", ":!dotnet build<CR>", { desc = "[D]otnet [B]uild" })
