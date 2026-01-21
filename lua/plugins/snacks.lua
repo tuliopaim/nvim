@@ -49,7 +49,7 @@ return {
     { "<leader>fs",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Find files - smart" },
     { "<leader><leader>",  function() Snacks.picker.buffers() end, desc = "Find buffers" },
     { "<leader>fg",  function() Snacks.picker.grep() end, desc = "Grep" },
-    { "<leader>fw",  function() Snacks.picker.grep_word() end, desc = "Grep word" },
+    { "<leader>fw",  function() Snacks.picker.grep_word() end, desc = "Grep word", mode = { "n", "v" } },
     { "<leader>fp",  function() Snacks.picker() end, desc = "Pickers" },
     { "<leader>fb",  function() Snacks.picker.git_branches() end, desc = "Find git branches" },
     { "<leader>fc",  function() Snacks.picker.commands() end, desc = "Find commands" },
