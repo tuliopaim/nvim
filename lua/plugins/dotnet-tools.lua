@@ -1,7 +1,6 @@
 return {
 	{
-		"dotnet-tools.nvim",
-		dir = "~/dev/personal/dotnet-tools.nvim",
+		"tuliopaim/dotnet-tools.nvim",
 		dependencies = {
 			"mfussenegger/nvim-dap",
 			"nvim-treesitter/nvim-treesitter",
