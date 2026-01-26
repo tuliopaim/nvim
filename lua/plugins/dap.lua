@@ -55,10 +55,10 @@ return {
 				dapui.open()
 			end
 			dap.listeners.before.event_terminated["dapui_config"] = function()
-				dapui.close()
+				dapui.close({ element = "scopes" })
 			end
 			dap.listeners.before.event_exited["dapui_config"] = function()
-				dapui.close()
+				dapui.close({ element = "scopes" })
 			end
 
 			vim.fn.sign_define("DapBreakpoint", {
@@ -109,7 +109,11 @@ return {
 			})
 		end,
 	},
-	{
+    {
+        "Cliffback/netcoredbg-macOS-arm64.nvim",
+        dependencies = { "mfussenegger/nvim-dap" }
+    },
+    {
 		"nvim-neotest/neotest",
 		dependencies = {
 			"nvim-neotest/nvim-nio",

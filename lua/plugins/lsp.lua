@@ -188,6 +188,8 @@ return {
 					"eslint",
 					"ts_ls",
 					"pylsp",
+					"jsonls",
+					"marksman",
 				},
 				automatic_installation = true,
 			})
