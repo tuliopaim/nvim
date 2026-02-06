@@ -1,5 +1,4 @@
 vim.opt.nu = true
-vim.opt.clipboard = "unnamedplus"
 vim.opt.relativenumber = true
 
 vim.opt.laststatus = 3

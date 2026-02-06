@@ -153,3 +153,17 @@ end, {})
 vim.keymap.set("n", "<leader>td", ":TODO<CR>", { desc = "[T]o [D]o" })
 
 vim.keymap.set("n", "<leader>db", ":!dotnet build<CR>", { desc = "[D]otnet [B]uild" })
+
+vim.schedule(function()
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    },
+  }
+end)
