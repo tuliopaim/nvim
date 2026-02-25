@@ -154,6 +154,56 @@ vim.keymap.set("n", "<leader>td", ":TODO<CR>", { desc = "[T]o [D]o" })
 
 vim.keymap.set("n", "<leader>db", ":!dotnet build<CR>", { desc = "[D]otnet [B]uild" })
 
+local function toggle_center_buffer()
+    local target_width = 120
+    local wins = vim.api.nvim_list_wins()
+
+    -- Check if padding windows already exist
+    local wins_to_close = {}
+    for _, win in ipairs(wins) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        if vim.b[buf].is_center_padding then
+            table.insert(wins_to_close, win)
+        end
+    end
+
+    if #wins_to_close > 0 then
+        for _, win in ipairs(wins_to_close) do
+            vim.api.nvim_win_close(win, true)
+        end
+        return
+    end
+
+    local total_width = vim.o.columns
+    local padding = math.floor((total_width - target_width) / 2)
+
+    if padding <= 0 then
+        vim.notify("Screen too narrow to center buffer", vim.log.levels.WARN)
+        return
+    end
+
+    local cur_win = vim.api.nvim_get_current_win()
+
+    local function make_padding_win(cmd)
+        vim.cmd(cmd .. " " .. padding .. "vsplit")
+        local buf = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_win_set_buf(0, buf)
+        vim.b[buf].is_center_padding = true
+        vim.wo.number = false
+        vim.wo.relativenumber = false
+        vim.wo.signcolumn = "no"
+        vim.wo.foldcolumn = "0"
+        vim.wo.statuscolumn = ""
+        vim.wo.winfixwidth = true
+        vim.api.nvim_set_current_win(cur_win)
+    end
+
+    make_padding_win("topleft")
+    make_padding_win("botright")
+end
+
+vim.keymap.set("n", "<leader>uC", toggle_center_buffer, { desc = "Center buffer" })
+
 vim.schedule(function()
   vim.g.clipboard = {
     name = 'OSC 52',
