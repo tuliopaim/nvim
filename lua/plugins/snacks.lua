@@ -43,6 +43,14 @@ return {
     statuscolumn = { enabled = true },
     words = { enabled = true },
     explorer = { enabled = true },
+    zen = {
+      toggles = {
+        dim = false,
+      },
+      win = {
+        width = 120,
+      },
+    },
   },
   keys = {
     { "<leader>ff",  function() Snacks.picker.files({ hidden = true }) end, desc = "Find files" },
