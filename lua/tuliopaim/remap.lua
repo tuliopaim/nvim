@@ -184,22 +184,17 @@ local function toggle_center_buffer()
 
     local cur_win = vim.api.nvim_get_current_win()
 
-    local function make_padding_win(cmd)
-        vim.cmd(cmd .. " " .. padding .. "vsplit")
-        local buf = vim.api.nvim_create_buf(false, true)
-        vim.api.nvim_win_set_buf(0, buf)
-        vim.b[buf].is_center_padding = true
-        vim.wo.number = false
-        vim.wo.relativenumber = false
-        vim.wo.signcolumn = "no"
-        vim.wo.foldcolumn = "0"
-        vim.wo.statuscolumn = ""
-        vim.wo.winfixwidth = true
-        vim.api.nvim_set_current_win(cur_win)
-    end
-
-    make_padding_win("topleft")
-    make_padding_win("botright")
+    vim.cmd("topleft " .. padding .. "vsplit")
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_win_set_buf(0, buf)
+    vim.b[buf].is_center_padding = true
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+    vim.wo.signcolumn = "no"
+    vim.wo.foldcolumn = "0"
+    vim.wo.statuscolumn = ""
+    vim.wo.winfixwidth = true
+    vim.api.nvim_set_current_win(cur_win)
 end
 
 vim.keymap.set("n", "<leader>uC", toggle_center_buffer, { desc = "Center buffer" })
