@@ -1,6 +1,6 @@
 return {
     "supermaven-inc/supermaven-nvim",
-    enabled = true,
+    enabled = false,
     event = "InsertEnter", -- Only load when entering insert mode
     config = function()
         require("supermaven-nvim").setup({
