@@ -76,7 +76,16 @@ return {
 		end,
 	},
 
-	{ "williamboman/mason.nvim", event = "VeryLazy", config = true },
+	{
+		"williamboman/mason.nvim",
+		event = "VeryLazy",
+		opts = {
+			registries = {
+				"github:mason-org/mason-registry",
+				"github:Crashdummyy/mason-registry",
+			},
+		},
+	},
 
 	{
 		"williamboman/mason-lspconfig.nvim",
@@ -172,13 +181,6 @@ return {
 					},
 				},
 			}
-
-			require("mason").setup({
-				registries = {
-					"github:mason-org/mason-registry",
-					"github:Crashdummyy/mason-registry",
-				},
-			})
 
 			require("mason-lspconfig").setup({
 				ensure_installed = {
