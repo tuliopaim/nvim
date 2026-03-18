@@ -17,8 +17,6 @@ vim.cmd("command Qa qa")
 vim.api.nvim_set_keymap('n', "<leader>v", ":vsplit<CR>", opts)
 vim.api.nvim_set_keymap('n', "<leader>b", ":split<CR>", opts)
 
-vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
-
 -- Tabs
 vim.api.nvim_set_keymap("n", "<leader>rk", ":resize +5<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>rj", ":resize -5<CR>", opts)
