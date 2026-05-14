@@ -1,3 +1,4 @@
 plugin/**
 worktrees
+bin/
 .DS_Store
