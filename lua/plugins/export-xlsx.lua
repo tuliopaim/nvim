@@ -1,7 +1,7 @@
 return {
-  "tuliopaim/nvim-export-xlsx",
+  "tuliopaim/dadbod-export-xlsx.nvim",
   dependencies = { "tpope/vim-dadbod" },
   config = function()
-    require("export_xlsx").setup()
+    require("dadbod_export_xlsx").setup()
   end,
 }
