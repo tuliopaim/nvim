@@ -28,6 +28,8 @@ return {
       ui_select = true,
       sources = {
         explorer = {
+          hidden = true,
+          ignored = true,
           layout = {
             layout = {
               width = 80,
@@ -65,7 +67,7 @@ return {
     { "<leader>fk",  function() Snacks.picker.keymaps() end, desc = "Find keymaps" },
     { "<leader>fd",  function() Snacks.picker.diagnostics() end, desc = "Find diagnostics" },
     { "<leader>fn", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
-    { "<leader>es", function() Snacks.picker.explorer({ hidden = true }) end, desc = "Explorer with hidden files" },
+    { "<leader>es", function() Snacks.picker.explorer({ hidden = true, ignored = true }) end, desc = "Explorer with all files" },
     { "<leader>z",  function() Snacks.zen() end, desc = "Toggle Zen Mode" },
     { "<leader>Z",  function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
     { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
