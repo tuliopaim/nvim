@@ -29,10 +29,11 @@ return {
             local dbs = {}
             for k, v in pairs(vim.fn.environ()) do
                 if k:match("^DB_") and type(v) == "string" and v:match("^%a[%w+%-.]*:") then
-                    dbs[k:sub(4):lower()] = v
+                    table.insert(dbs, { name = k:sub(4):lower():gsub("_", "-"), url = v })
                 end
             end
-            if next(dbs) then vim.g.dbs = dbs end
+            table.sort(dbs, function(a, b) return a.name < b.name end)
+            if #dbs > 0 then vim.g.dbs = dbs end
 
             vim.g.db_ui_use_nerd_fonts = 1
             vim.g.db_ui_winwidth = 30
