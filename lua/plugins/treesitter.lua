@@ -10,6 +10,7 @@ return {
                 'bash',
                 'c',
                 'css',
+                'diff',
                 'html',
                 'javascript',
                 'json',
