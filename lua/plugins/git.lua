@@ -12,7 +12,7 @@ return {
 	},
     {
 		"sindrets/diffview.nvim",
-		event = "VeryLazy",
+		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewRefresh", "DiffviewFileHistory" },
         config = function()
             vim.api.nvim_create_user_command('Gd', 'DiffviewOpen', {})
         end,
