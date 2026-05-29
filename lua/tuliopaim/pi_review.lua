@@ -26,16 +26,21 @@ end
 local function force_redraw()
   -- Multiplexers can briefly repaint the parent Pi TUI while Neovim still owns
   -- stdin. Re-entering the alternate screen on focus/window events makes the
-  -- visible pane catch up when moving away/back.
-  if not vim.fn.has("gui_running") then
+  -- visible pane catch up when moving away/back. Gated on PI_REVIEW_ROOT so
+  -- standalone nvim usage doesn't get its scrollback cleared.
+  if vim.env.PI_REVIEW_ROOT and not vim.fn.has("gui_running") then
     pcall(function()
-      io.write("\027[?1049h\027[H\027[2J")
+      io.write("\027[?1049h\027[?25h\027[H\027[2J")
       io.flush()
     end)
   end
   pcall(vim.cmd, "mode")
   pcall(vim.cmd, "redraw!")
 end
+
+-- Forward declared; assigned after `save` exists. Used from both raw and diffview
+-- branches to register the VimLeavePre autosave once per session.
+local setup_autosave_autocmd
 
 local function iso_now()
   return os.date("!%Y-%m-%dT%H:%M:%SZ")
@@ -114,7 +119,8 @@ end
 
 local function canonical_line(comment)
   if comment.line then return comment.line end
-  if comment.side == "old" then return comment.oldLine or comment.newLine end
+  if comment.side == "old" then return comment.oldLine end
+  if comment.side == "new" then return comment.newLine end
   return comment.newLine or comment.oldLine
 end
 
@@ -123,6 +129,9 @@ local function comment_key(comment)
 end
 
 local function markdown_resolved_map(path)
+  -- Parses only the round-trip fields written by save(): the `[x]/[ ]` checkbox in
+  -- the heading and the following `Side: \`...\`` line. User edits elsewhere in the
+  -- markdown body are not preserved on the next save.
   local map = {}
   if not path or vim.fn.filereadable(path) ~= 1 then return map end
   local ok, lines = pcall(vim.fn.readfile, path)
@@ -197,8 +206,15 @@ local function render()
     if bufnr and vim.api.nvim_buf_is_valid(bufnr) and lnum then
       local line_count = vim.api.nvim_buf_line_count(bufnr)
       if lnum >= 1 and lnum <= line_count then
+        local body_lines = vim.split(comment.body or "", "\n", { plain = true })
+        local virt = {}
+        for i, body_line in ipairs(body_lines) do
+          local prefix = i == 1 and "  💬 " or "     "
+          table.insert(virt, { { prefix .. body_line, "Comment" } })
+        end
+        table.insert(virt, { { "     [resolve: <leader>rx]", "Comment" } })
         pcall(vim.api.nvim_buf_set_extmark, bufnr, state.ns, lnum - 1, 0, {
-          virt_lines = { { { "  💬 " .. (comment.body or ""), "Comment" }, { "  [resolve: <leader>rx]", "Comment" } } },
+          virt_lines = virt,
           virt_lines_above = false,
         })
       end
@@ -352,6 +368,15 @@ local function save(opts)
   end
 end
 
+setup_autosave_autocmd = function()
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = vim.api.nvim_create_augroup("pi_review_autosave", { clear = true }),
+    callback = function()
+      if state.md_path and not did_save then save({ silent = true }) end
+    end,
+  })
+end
+
 local function diffview_file_from_buf(bufnr)
   local name = vim.api.nvim_buf_get_name(bufnr)
   if name:sub(1, #state.root) == state.root then
@@ -397,6 +422,8 @@ local function edit_multiline(default, done)
   })
   vim.bo[buf].filetype = "markdown"
   vim.wo[win].cursorline = true
+  vim.wo[win].wrap = true
+  vim.wo[win].linebreak = true
   vim.wo[win].winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual"
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(default or "", "\n", { plain = true }))
   local function close_with(value)
@@ -425,7 +452,9 @@ local function add_or_edit_comment()
       state.comments[key] = nil
       state.hidden_comments[key] = nil
     else
-      local updated = vim.tbl_extend("force", comment_from_anchor(anchor, input), existing or {})
+      -- Fresh anchor data (diffLine, code, context) wins over stale existing fields
+      -- so edits after a diff regen pick up the new position.
+      local updated = vim.tbl_extend("force", existing or {}, comment_from_anchor(anchor, input))
       updated.body = input
       updated.resolved = existing and existing.resolved or false
       updated.updatedAt = iso_now()
@@ -476,26 +505,31 @@ local function toggle_resolved()
 end
 
 local function jump_comment(direction)
-  local comments = sorted_comments()
-  if #comments == 0 then
+  local current_buf = vim.api.nvim_get_current_buf()
+  local targetable = {}
+  for _, c in ipairs(sorted_comments()) do
+    local lnum = state.backend == "diffview" and c.line or c.diffLine
+    local buf_ok = state.backend ~= "diffview" or c.bufnr == current_buf
+    if lnum and buf_ok then table.insert(targetable, c) end
+  end
+  if #targetable == 0 then
     notify("No comments", vim.log.levels.WARN)
     return
   end
   local current = vim.api.nvim_win_get_cursor(0)[1]
   local target = nil
-  local current_buf = vim.api.nvim_get_current_buf()
   if direction > 0 then
-    for _, c in ipairs(comments) do
+    for _, c in ipairs(targetable) do
       local lnum = state.backend == "diffview" and c.line or c.diffLine
-      if (state.backend ~= "diffview" or c.bufnr == current_buf) and lnum and lnum > current then target = c; break end
+      if lnum > current then target = c; break end
     end
-    target = target or comments[1]
+    target = target or targetable[1]
   else
-    for i = #comments, 1, -1 do
-      local lnum = state.backend == "diffview" and comments[i].line or comments[i].diffLine
-      if (state.backend ~= "diffview" or comments[i].bufnr == current_buf) and lnum and lnum < current then target = comments[i]; break end
+    for i = #targetable, 1, -1 do
+      local lnum = state.backend == "diffview" and targetable[i].line or targetable[i].diffLine
+      if lnum < current then target = targetable[i]; break end
     end
-    target = target or comments[#comments]
+    target = target or targetable[#targetable]
   end
   if state.backend == "diffview" and target.bufnr and vim.api.nvim_buf_is_valid(target.bufnr) then
     local win = vim.fn.bufwinid(target.bufnr)
@@ -555,7 +589,11 @@ local function map_review_keys(bufnr)
   vim.keymap.set("n", "<leader>rd", delete_comment, vim.tbl_extend("force", opts, { desc = "Delete review comment" }))
   vim.keymap.set("n", "<leader>rx", toggle_resolved, vim.tbl_extend("force", opts, { desc = "Toggle review comment resolved" }))
   vim.keymap.set("n", "<leader>rs", save, vim.tbl_extend("force", opts, { desc = "Save review" }))
-  vim.keymap.set("n", "<leader>rq", function() save(); if state.backend == "diffview" then vim.cmd("DiffviewClose") else vim.cmd("quit") end end, vim.tbl_extend("force", opts, { desc = "Save review and quit" }))
+  vim.keymap.set("n", "<leader>rq", function()
+    save()
+    if state.backend == "diffview" then pcall(vim.cmd, "DiffviewClose") end
+    vim.cmd("qa")
+  end, vim.tbl_extend("force", opts, { desc = "Save review and quit" }))
   vim.keymap.set("n", "<leader>rn", function() jump_comment(1) end, vim.tbl_extend("force", opts, { desc = "Next review comment" }))
   vim.keymap.set("n", "<leader>rp", function() jump_comment(-1) end, vim.tbl_extend("force", opts, { desc = "Previous review comment" }))
   vim.keymap.set("n", "<leader>rR", reset_review, vim.tbl_extend("force", opts, { desc = "Restart review (clear comments)" }))
@@ -600,10 +638,7 @@ local function start_diffview()
     group = group,
     callback = function() vim.schedule(force_redraw) end,
   })
-  vim.api.nvim_create_autocmd("VimLeavePre", {
-    group = vim.api.nvim_create_augroup("pi_review_autosave", { clear = true }),
-    callback = function() if state.md_path and not did_save then save({ silent = true }) end end,
-  })
+  setup_autosave_autocmd()
   if vim.fn.exists(":DiffviewOpen") == 0 then
     pcall(function() require("lazy").load({ plugins = { "diffview.nvim" } }) end)
   end
@@ -622,6 +657,9 @@ local function start_diffview()
 end
 
 function M.start()
+  did_save = false
+  state.attached_buffers = {}
+  state.line_map = {}
   state.bufnr = vim.api.nvim_get_current_buf()
   state.root = vim.env.PI_REVIEW_ROOT
   state.diff_path = vim.env.PI_REVIEW_DIFF
@@ -667,15 +705,7 @@ function M.start()
     buffer = state.bufnr,
     callback = function() vim.schedule(force_redraw) end,
   })
-  vim.api.nvim_create_autocmd("VimLeavePre", {
-    group = vim.api.nvim_create_augroup("pi_review_autosave", { clear = true }),
-    buffer = state.bufnr,
-    callback = function()
-      if state.md_path and not did_save then
-        save({ silent = true })
-      end
-    end,
-  })
+  setup_autosave_autocmd()
 
   save({ silent = true })
   notify("Review mode ready: <leader>rc edit/autosave, <leader>rd delete, <leader>rR restart")
