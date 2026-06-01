@@ -8,7 +8,6 @@ local state = {
   root = nil,
   diff_path = nil,
   json_path = nil,
-  md_path = nil,
   scope = nil,
   backend = "raw",
   diffview_args = {},
@@ -24,16 +23,9 @@ local function notify(msg, level)
 end
 
 local function force_redraw()
-  -- Multiplexers can briefly repaint the parent Pi TUI while Neovim still owns
-  -- stdin. Re-entering the alternate screen on focus/window events makes the
-  -- visible pane catch up when moving away/back. Gated on PI_REVIEW_ROOT so
-  -- standalone nvim usage doesn't get its scrollback cleared.
-  if vim.env.PI_REVIEW_ROOT and not vim.fn.has("gui_running") then
-    pcall(function()
-      io.write("\027[?1049h\027[?25h\027[H\027[2J")
-      io.flush()
-    end)
-  end
+  -- Keep this Neovim-native. Raw terminal escape writes from here can fight
+  -- Pi's parent TUI over alternate-screen/cursor state, especially when a
+  -- second review is opened in the same Pi session.
   pcall(vim.cmd, "mode")
   pcall(vim.cmd, "redraw!")
 end
@@ -128,38 +120,6 @@ local function comment_key(comment)
   return table.concat({ comment.file or "", comment.side or "", tostring(canonical_line(comment) or 0) }, ":")
 end
 
-local function markdown_resolved_map(path)
-  -- Parses only the round-trip fields written by save(): the `[x]/[ ]` checkbox in
-  -- the heading and the following `Side: \`...\`` line. User edits elsewhere in the
-  -- markdown body are not preserved on the next save.
-  local map = {}
-  if not path or vim.fn.filereadable(path) ~= 1 then return map end
-  local ok, lines = pcall(vim.fn.readfile, path)
-  if not ok then return map end
-  local current_file = nil
-  local pending = nil
-  for _, line in ipairs(lines) do
-    local file = line:match("^##%s+(.+)$")
-    if file then
-      current_file = file
-      pending = nil
-    else
-      local checked, line_no = line:match("^###%s+%[([ xX])%]%s+Line%s+(.+)$")
-      if checked and current_file then
-        local old_line = line_no:match("old line%s+(%d+)")
-        pending = { file = current_file, checked = checked:lower() == "x", line = tonumber(old_line or line_no:match("%d+")) }
-      elseif pending then
-        local side = line:match("Side:%s+`([^`]+)`")
-        if side and pending.line then
-          map[table.concat({ pending.file, side, tostring(pending.line) }, ":")] = pending.checked
-          pending = nil
-        end
-      end
-    end
-  end
-  return map
-end
-
 local function context_for_line(diff_line, radius)
   radius = radius or 3
   local out = {}
@@ -227,13 +187,10 @@ local function load_comments()
   state.comments = {}
   state.hidden_comments = {}
   local data = json_read(state.json_path)
-  local md_resolved = markdown_resolved_map(state.md_path)
   state.created_at = (data and data.createdAt) or iso_now()
   if not data or type(data.comments) ~= "table" then return end
 
   for _, comment in ipairs(data.comments) do
-    local md_state = md_resolved[comment_key(comment)]
-    if md_state ~= nil then comment.resolved = md_state end
     if comment.resolved then
       state.hidden_comments[comment_key(comment)] = comment
       goto continue_load
@@ -314,57 +271,9 @@ local function save(opts)
     comments = comments,
   }
   write_file(state.json_path, vim.json.encode(doc))
-
-  local md = {
-    "# Code Review Comments",
-    "",
-    "Repo: `" .. (state.root or "") .. "`  ",
-    "Generated: `" .. doc.updatedAt .. "`  ",
-    "Scope: `" .. (state.scope or "HEAD") .. "`  ",
-    "Comments: `" .. tostring(#comments) .. "`",
-    "",
-  }
-  if #comments == 0 then
-    table.insert(md, "No comments.")
-  end
-  local current_file = nil
-  for _, c in ipairs(comments) do
-    if c.file ~= current_file then
-      current_file = c.file
-      table.insert(md, "## " .. current_file)
-      table.insert(md, "")
-    end
-    local line_label = c.line and tostring(c.line) or (c.newLine and tostring(c.newLine) or ("old line " .. tostring(c.oldLine or "?")))
-    local checkbox = c.resolved and "[x]" or "[ ]"
-    table.insert(md, "### " .. checkbox .. " Line " .. line_label)
-    table.insert(md, "")
-    table.insert(md, "Side: `" .. c.side .. "`, diff line: `" .. tostring(c.diffLine) .. "`, kind: `" .. tostring(c.kind) .. "`")
-    table.insert(md, "")
-    if c.code and c.code ~= "" then
-      table.insert(md, "```")
-      table.insert(md, c.code)
-      table.insert(md, "```")
-      table.insert(md, "")
-    end
-    table.insert(md, c.body or "")
-    table.insert(md, "")
-    if type(c.context) == "table" and #c.context > 0 then
-      table.insert(md, "<details><summary>Context</summary>")
-      table.insert(md, "")
-      table.insert(md, "```")
-      for _, ctx in ipairs(c.context) do
-        table.insert(md, string.format("%s:%s %s", ctx.side or "", tostring(ctx.line or "?"), ctx.code or ""))
-      end
-      table.insert(md, "```")
-      table.insert(md, "")
-      table.insert(md, "</details>")
-      table.insert(md, "")
-    end
-  end
-  write_file(state.md_path, table.concat(md, "\n"))
   did_save = true
   if not opts.silent then
-    notify("Saved review to " .. state.md_path)
+    notify("Saved review to " .. state.json_path)
   end
 end
 
@@ -372,7 +281,7 @@ setup_autosave_autocmd = function()
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = vim.api.nvim_create_augroup("pi_review_autosave", { clear = true }),
     callback = function()
-      if state.md_path and not did_save then save({ silent = true }) end
+      if state.json_path and not did_save then save({ silent = true }) end
     end,
   })
 end
@@ -664,7 +573,6 @@ function M.start()
   state.root = vim.env.PI_REVIEW_ROOT
   state.diff_path = vim.env.PI_REVIEW_DIFF
   state.json_path = vim.env.PI_REVIEW_JSON
-  state.md_path = vim.env.PI_REVIEW_MD
   state.scope = vim.env.PI_REVIEW_SCOPE
   state.backend = vim.env.PI_REVIEW_BACKEND or "raw"
   if vim.env.PI_REVIEW_DIFFVIEW_ARGS then
@@ -672,7 +580,7 @@ function M.start()
     if ok and type(decoded) == "table" then state.diffview_args = decoded end
   end
 
-  if not state.root or not state.json_path or not state.md_path then
+  if not state.root or not state.json_path then
     notify("Missing PI_REVIEW_* environment variables", vim.log.levels.ERROR)
     return
   end
