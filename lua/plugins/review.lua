@@ -6,6 +6,7 @@ return {
     cmd = { "ReviewStart" },
     keys = {
       { "<leader>rR", function() require("tuliopaim.review").start({}) end, desc = "Open Diffview review" },
+      { "<leader>rr", function() require("tuliopaim.review").refresh() end, desc = "Refresh review" },
       { "<leader>rc", function() require("tuliopaim.review").comment() end, desc = "Add review comment on current line" },
     },
     config = function()
