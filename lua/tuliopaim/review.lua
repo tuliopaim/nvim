@@ -509,4 +509,16 @@ function M.refresh()
   notify("Review refreshed")
 end
 
+vim.api.nvim_create_user_command("ReviewComment", function()
+  M.comment()
+end, { desc = "Add/edit review comment on current line" })
+
+vim.api.nvim_create_user_command("ReviewRefresh", function()
+  M.refresh()
+end, { desc = "Refresh review" })
+
+vim.api.nvim_create_user_command("ReviewStart", function(opts)
+  M.start(opts.fargs)
+end, { nargs = "*", desc = "Open Diffview review UI" })
+
 return M
