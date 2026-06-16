@@ -14,11 +14,6 @@ return {
 				desc = "Run test at cursor",
 			},
 			{
-				"<leader>rc",
-				":DotnetTestClass<CR>",
-				desc = "Run test class",
-			},
-			{
 				"<leader>dd",
 				":DotnetDebug<CR>",
 				desc = "Start .NET debugging",
