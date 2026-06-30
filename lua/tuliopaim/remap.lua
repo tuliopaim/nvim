@@ -67,37 +67,37 @@ end)
 
 -- Goto next diagnostic of any severity
 vim.keymap.set("n", "]d", function()
-    vim.diagnostic.goto_next({})
+    vim.diagnostic.jump({ count = 1 })
     vim.api.nvim_feedkeys("zz", "n", false)
 end)
 
 -- Goto previous diagnostic of any severity
 vim.keymap.set("n", "[d", function()
-    vim.diagnostic.goto_prev({})
+    vim.diagnostic.jump({ count = -1 })
     vim.api.nvim_feedkeys("zz", "n", false)
 end)
 
 -- Goto next error diagnostic
 vim.keymap.set("n", "]e", function()
-    vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
     vim.api.nvim_feedkeys("zz", "n", false)
 end)
 
 -- Goto previous error diagnostic
 vim.keymap.set("n", "[e", function()
-    vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
     vim.api.nvim_feedkeys("zz", "n", false)
 end)
 
 -- Goto next warning diagnostic
 vim.keymap.set("n", "]w", function()
-    vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+    vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN })
     vim.api.nvim_feedkeys("zz", "n", false)
 end)
 
 -- Goto previous warning diagnostic
 vim.keymap.set("n", "[w", function()
-    vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
+    vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN })
     vim.api.nvim_feedkeys("zz", "n", false)
 end)
 
@@ -117,12 +117,12 @@ vim.api.nvim_create_user_command("TODO", function()
     local file_path = vim.fn.expand("~/vault/DAILY NOTES.md")
 
     -- Calculate window size (% of editor size)
-    local width = math.floor(vim.api.nvim_get_option("columns") * 0.6)
-    local height = math.floor(vim.api.nvim_get_option("lines") * 0.8)
+    local width = math.floor(vim.o.columns * 0.6)
+    local height = math.floor(vim.o.lines * 0.8)
 
     -- Calculate starting position to center the window
     local row = 0
-    local col = math.floor((vim.api.nvim_get_option("columns") - width))
+    local col = math.floor(vim.o.columns - width)
 
     -- Create the floating window
     local buf = vim.api.nvim_create_buf(false, true)
@@ -139,10 +139,10 @@ vim.api.nvim_create_user_command("TODO", function()
     local win = vim.api.nvim_open_win(buf, true, win_opts)
 
     -- Set some window options
-    vim.api.nvim_win_set_option(win, "winblend", 0)
-    vim.api.nvim_win_set_option(win, "wrap", true)
-    vim.api.nvim_win_set_option(win, "relativenumber", true)
-    vim.api.nvim_win_set_option(win, "number", true)
+    vim.wo[win].winblend = 0
+    vim.wo[win].wrap = true
+    vim.wo[win].relativenumber = true
+    vim.wo[win].number = true
 
     -- Try to read the file into the buffer
     vim.api.nvim_command("edit " .. file_path)

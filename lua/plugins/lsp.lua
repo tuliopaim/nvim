@@ -30,8 +30,9 @@ local on_attach = function(_, bufnr)
 		Snacks.picker.lsp_workspace_symbols()
 	end, { buffer = bufnr, desc = "[W]orkspace [S]ymbols" })
 	vim.keymap.set("n", "<leader>cl", function()
-		vim.lsp.codelens.refresh()
-	end, { buffer = bufnr, desc = "[C]ode [L]ens" })
+		local filter = { bufnr = bufnr }
+		vim.lsp.codelens.enable(not vim.lsp.codelens.is_enabled(filter), filter)
+	end, { buffer = bufnr, desc = "Toggle [C]ode [L]ens" })
 	vim.keymap.set("n", "<leader>ih", function()
 		vim.lsp.inlay_hint.enable()
 	end, { buffer = bufnr, desc = "[C]ode [L]ens" })
@@ -139,7 +140,7 @@ return {
 			})
 
 			-- Configure lua_ls
-			vim.lsp.config.lua_ls = {
+			vim.lsp.config("lua_ls", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 				settings = {
@@ -150,10 +151,10 @@ return {
 						diagnostics = { globals = { "vim" } },
 					},
 				},
-			}
+			})
 
 			-- Configure gopls
-			vim.lsp.config.gopls = {
+			vim.lsp.config("gopls", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 				settings = {
@@ -162,10 +163,10 @@ return {
 						gofumpt = false,
 					},
 				},
-			}
+			})
 
 			-- Configure pylsp
-			vim.lsp.config.pylsp = {
+			vim.lsp.config("pylsp", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 				settings = {
@@ -180,7 +181,7 @@ return {
 						pylsp_isort = { enabled = false },
 					},
 				},
-			}
+			})
 
 			require("mason-lspconfig").setup({
 				ensure_installed = {
