@@ -1,6 +1,8 @@
 vim.opt.nu = true
 vim.opt.relativenumber = true
 
+vim.lsp.log.set_level("ERROR")
+
 vim.opt.laststatus = 3
 
 vim.opt.tabstop = 4
