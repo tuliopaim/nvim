@@ -24,8 +24,7 @@ return {
                 'typescript',
                 'vim',
                 'c_sharp',
-                'yaml',
-                'tmux',
+                'yaml'
             })
 
             local group = vim.api.nvim_create_augroup('nvim-treesitter-migration', { clear = true })
