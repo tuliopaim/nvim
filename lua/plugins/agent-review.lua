@@ -22,10 +22,8 @@ return {
 			},
 			{
 				"<leader>rc",
-				function()
-					require("agent-review").comment()
-				end,
-				desc = "Add review comment on current line",
+				mode = { "n", "x" },
+				desc = "Add or edit review comment",
 			},
 		},
 		config = function()
