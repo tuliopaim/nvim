@@ -132,7 +132,8 @@ Space (`<leader>`)
 ### Essential Mappings
 
 #### File Navigation
-- `<leader>ff` - Find files (with hidden)
+- `<leader>ff` - Find files (including hidden, excluding ignored)
+- `<leader>fF` - Find files (including hidden and ignored)
 - `<leader>fg` - Grep in project
 - `<leader><leader>` - Switch buffers
 - `<leader>-` - Toggle Oil file explorer
